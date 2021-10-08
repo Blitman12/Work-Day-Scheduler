@@ -64,7 +64,7 @@ $(document).ready(function () {
             let taskTime = $($(this).siblings("textarea").prev()).data("time")
             tasks = [{
                 text: taskInput,
-                time: taskTime
+                time: +taskTime
             }]
             saveTasks();
         } else {
@@ -74,18 +74,20 @@ $(document).ready(function () {
             let taskTime = $($(this).siblings("textarea").prev()).data("time")
 
             for (let i = 0; i < tasks.length; i++) {
-                if (tasks[i].time == taskTime) {
+                if (tasks[i].time === taskTime) {
                     tasks[i].text = taskInput
-                    saveTasks()
-                } else {
-                    let tempObject = {
-                        text: taskInput,
-                        time: taskTime
-                    }
-                    tasks.push(tempObject)
-                    saveTasks();
+                    tasks[i].time = +taskTime;
+                    return saveTasks()
                 }
             }
+
+            let tempObject = {
+                text: taskInput,
+                time: +taskTime
+            }
+            
+            tasks.push(tempObject)
+            saveTasks();
         }
     })
     loadTasks();
