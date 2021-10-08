@@ -2,7 +2,7 @@ $(document).ready(function () {
     // if tasks exists in localStorage it will be placed here, otherwise it will be an empty array
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     let currentTime = moment().format("HH")
-
+    console.log(tasks)
     //Change color based off of the current time
     var changeColorOnTime = function () {
         $(".container").find("h3").each(function () {
@@ -25,16 +25,10 @@ $(document).ready(function () {
     //call the function to change classes based off of time
     changeColorOnTime()
 
-    //call the changeColor function once every 30 minutes
-    setInterval(function () {
-        changeColorOnTime()
-        console.log("I just did it")
-    }, (1000 * 60) * 30)
 
     // load tasks from local storage then placing them in their right spaces
     let loadTasks = function () {
         let loadedTasks = JSON.parse(localStorage.getItem("tasks"))
-        console.log(loadedTasks)
         // if there is nothing in localStorage then get out of this function
         if (!loadedTasks) {
             return
@@ -44,7 +38,6 @@ $(document).ready(function () {
             let textToReplace = $(this).siblings("textarea")
             let timeBlock = $(this).data("time")
             for (let i = 0; i < loadedTasks.length; i++) {
-                console.log(timeBlock)
                 if (timeBlock == loadedTasks[i].time) {
                     textToReplace.val(loadedTasks[i].text)
                 }
@@ -59,6 +52,7 @@ $(document).ready(function () {
     }
 
 
+
     // Aquires the users input on a specific time and uploads it to localStorage
     $(".container").on("click", ".saveBtn", function () {
         let loadedTasks = localStorage.getItem("tasks")
@@ -67,7 +61,7 @@ $(document).ready(function () {
             // gets the value the user input into the textarea
             let taskInput = $($(this).siblings("textarea")).val()
             // gets the value of the time slot and removes the am/pm from it to leave a normal number
-            let taskTime = $($(this).siblings("textarea").prev()).text().slice(0, -2)
+            let taskTime = $($(this).siblings("textarea").prev()).data("time")
             tasks = [{
                 text: taskInput,
                 time: taskTime
@@ -78,13 +72,28 @@ $(document).ready(function () {
             let taskInput = $($(this).siblings("textarea")).val()
             // gets the value of the time slot and removes the am/pm from it to leave a normal number
             let taskTime = $($(this).siblings("textarea").prev()).data("time")
-            let tempObject = {
-                text: taskInput,
-                time: taskTime
+
+            for (let i = 0; i < tasks.length; i++) {
+                if (tasks[i].time == taskTime) {
+                    tasks[i].text = taskInput
+                    saveTasks()
+                } else {
+                    let tempObject = {
+                        text: taskInput,
+                        time: taskTime
+                    }
+                    tasks.push(tempObject)
+                    saveTasks();
+                }
             }
-            tasks.push(tempObject)
-            saveTasks();
         }
     })
     loadTasks();
+
+
+    //call the changeColor function once every 30 minutes
+    setInterval(function () {
+        changeColorOnTime()
+    }, (1000 * 60) * 30)
+
 })
