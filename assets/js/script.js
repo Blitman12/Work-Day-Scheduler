@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    let tasks = [];
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
     var changeColorOnTime = function () {
 
@@ -16,10 +16,6 @@ $(document).ready(function () {
         localStorage.setItem("tasks", JSON.stringify(tasks))
         loadTasks();
     }
-
-
-
-    //everything works perfect until I refresh the screen and the submit again.....
 
 
     // Aquires the users input on a specific time and uploads it to localStorage
